@@ -1,0 +1,96 @@
+<html>
+
+<head>
+
+<title>657.001 Lab 1</title>
+<link rel="stylesheet" type="text/css" href="657.001.css">
+<link rel="stylesheet" type="text/css" href="sidenav.css">
+<script type="text/javascript" src="sidenav.js"></script>
+
+<body>
+
+<div id="mySidenav" class="sidenav">
+<a href="javascript:void(0)" class="closebtn" onclick="closeNav()">&times;</a>
+</div>
+
+<div id="main">
+
+<div class="labtitle">Lab 1&ensp;Linux Basics</div>
+<div class="subtitle">657.001&ensp;Transcriptomics&ensp;(WS 2018/19)</div>
+
+<span id="contents" onclick="openNav()">
+<span style="font-size:125%">&#9776;</span>&ensp;Contents
+</span>
+
+<div id="file" class="sectitle">Manipulating files and directories</div>
+<hr>
+<ol>
+  <li>Use the <kbd>ls</kbd> command after each step to confirm that you did it correctly, and use the <kbd>pwd</kbd> command to see which directory you are in.
+  <li>In your Linux home directory, make a new directory called <kbd>transcriptomics</kbd>.
+  <li>Change to the <kbd>transcriptomics</kbd> directory, and confirm that you are in the <kbd>transcriptomics</kbd> directory.
+  <li>Make a new directory called <kbd>linux</kbd>, change to the directory, and confirm that you are in the <kbd>linux</kbd> directory.
+  <li>Make an empty text file called <kbd>empty.txt</kbd> with the command <kbd>touch empty.txt</kbd>.
+  <li>Copy the file <kbd>empty.txt</kbd> to <kbd>empty.txt.bak</kbd>.
+  <li>Rename the file <kbd>empty.txt.bak</kbd> to <kbd>empty2.txt</kbd>.
+  <li>Create a subdirectory called <kbd>sub1</kbd>.
+  <li>Move the file <kbd>empty2.txt</kbd> into the <kbd>sub1</kbd> directory.
+  <li>Create another subdirectory called <kbd>sub2</kbd>.
+  <li>Move the file <kbd>empty2.txt</kbd> in the <kbd>sub1</kbd> directory into the <kbd>sub2</kbd> directory.
+  <li>Move the file <kbd>empty2.txt</kbd> in the <kbd>sub2</kbd> directory back into the <kbd>linux</kbd> directory, and change the file name to <kbd>empty3.txt</kbd>.
+  Do the moving and renaming at the same time, with one command.
+  <li>Remove the file <kbd>empty3.txt</kbd>.
+  <li>Remove the <kbd>sub1</kbd> and <kbd>sub2</kbd> directories.
+  <li>You should now have only the file <kbd>empty.txt</kbd> in your <kbd>linux</kbd> directory. Confirm that this is true.
+</ol>
+
+<div id="view" class="sectitle">Viewing files</div>
+<hr>
+<ol>
+  <li>Copy the file <kbd>/export/data/657.001/text/exons.fasta</kbd> into the <kbd>linux</kbd> directory.
+  <li>Display the file <kbd>exons.fasta</kbd> on your terminal using the <kbd>cat</kbd> command.
+  <li>Display the file <kbd>exons.fasta</kbd> on your terminal using the <kbd>less</kbd> command.
+  <li>Navigate through the file with the <kbd>less</kbd> command. At the <kbd>:</kbd> at the bottom of the terminal, try these keys: SPACE and <kbd>b</kbd>, <kbd>d</kbd> and <kbd>u</kbd>, and ENTER and <kbd>y</kbd>.
+  <li>Type <kbd>/</kbd> at the <kbd>:</kbd> prompt while using <kbd>less</kbd>, to enter the search mode. Search for the word <kbd>length</kbd> in the file <kbd>exons.fasta</kbd>.
+</ol>
+
+<div id="edit" class="sectitle">Editing files</div>
+<hr>
+<ol>
+  <li>Use the command <kbd>gedit exons.fasta</kbd> to edit the file <kbd>exons.fasta</kbd>. If you only have a terminal connection to the Linux server, you can do <kbd>nano exons.fasta</kbd> to use another text editor.
+  <li>Remove everything in the file except the first exon sequence. To do this, search for the second sequence header (<em>i.e.</em> the <kbd>></kbd> character) and remove everything from the line to the end of the file.
+  <li>Save the changed file as a new file called <kbd>exon1.fasta</kbd>.
+  <li>Confirm that you now have both <kbd>exons.fasta</kbd> and <kbd>exon1.fasta</kbd>.
+</ol>
+
+<div id="help" class="sectitle">Finding help</div>
+<hr>
+<ol>
+  <li>Use the command <kbd>man ls </kbd> to find the option to <kbd>ls</kbd> to list all  files, including hidden ones. Try it in your home directory.
+  <li>What is the option to <kbd>ls</kbd> to list all files in all subdirectories? Try it in your home directory.
+  <li>What is the option to <kbd>wc</kbd> to show only the number of lines?
+  <li>What is the option to <kbd>sort</kbd> to sort in numeric order, instead of the default alphabetic order?
+  <li>What is the option to <kbd>grep</kbd> to select the lines not containing the given string?
+</ol>
+
+<div id="redir" class="sectitle">Redirection and piping</div>
+<hr>
+<ol>
+  <li>Move to your <kbd>linux</kbd> directory (if not already there). Using wildcard characters (<kbd>*</kbd>, <kbd>?</kbd>, or <kbd>[]</kbd>), copy only those files that start with <kbd>seq</kbd>, from the directory <kbd>/export/data/657.001/text</kbd> to your <kbd>linux</kbd> directory, using this command:
+<p>
+<table class="command"><tr><td><pre>
+cp /export/data/657.001/text/seq* .
+</pre></table>
+  <li>Use <kbd>ls</kbd> and wildcards to list all files with a name that starts with <kbd>seq</kbd> and contains exactly 5 characters. 
+  <li>Redirect (use <kbd>></kbd>) the out of the previous <kbd>ls</kbd> command to a new file called <kbd>seqfiles.txt</kbd>.
+  <li>Collect the contents of the files in <kbd>seqfiles.txt</kbd> into a single file. Use the <kbd>cat</kbd> command and output redirection.
+  <li>What is a single Linux command to count how many files you have in your current directory? You need to use piping.
+</ol>
+
+<div id="text" class="sectitle">Text processing commands</div>
+<hr>
+<ol>
+  <li>Display the first 10 lines of the file <kbd>exons.fasta</kbd>. Then display the first 20 lines. 
+  <li>Display the last 10 lines of the file <kbd>exons.fasta</kbd>. Then display the last 20 lines. 
+  <li>Print only those lines of the file <kbd>exons.fasta</kbd> that contain <kbd>name</kbd>. Use the <kbd>grep</kbd> command.
+  <li>Compare the three files <kbd>seq01</kbd>, <kbd>seq02</kbd>, <kbd>seq03</kbd>, to find out whether any of these are actually same files. Use the <kbd>diff</kbd> command to compare two files at a time. What does <kbd>diff</kbd> show you when two input files are the same? What does it show you when the two files are different?
+</ol>

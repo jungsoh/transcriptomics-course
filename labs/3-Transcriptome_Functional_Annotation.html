@@ -1,0 +1,114 @@
+<html>
+
+<head>
+
+<title>657.001 Lab 3</title>
+<link rel="stylesheet" type="text/css" href="657.001.css">
+<link rel="stylesheet" type="text/css" href="sidenav.css">
+<script type="text/javascript" src="sidenav.js"></script>
+
+<body>
+
+<div id="mySidenav" class="sidenav">
+<a href="javascript:void(0)" class="closebtn" onclick="closeNav()">&times;</a>
+</div>
+
+<div id="main">
+
+<div class="labtitle">Lab 3&ensp;Transcriptome Functional Annotation</div>
+<div class="subtitle">657.001&ensp;Transcriptomics&ensp;(WS 2018)</div>
+
+<span id="contents" onclick="openNav()">
+<span style="font-size:125%">&#9776;</span>&ensp;Contents
+</span>
+
+<div id="cds" class="sectitle">Coding region prediction</div>
+<hr>
+<ol>
+  <li>We will use the <a href="https://github.com/TransDecoder/TransDecoder/wiki">TransDecoder</a> package to identify likely coding regions from the transcripts assembled by Trinity.  <li>Make sure you are in your <kbd>transcriptomics</kbd> directory, copy <kbd>/export/data/657.001/scripts/run_transdecoder.sh</kbd> and run it, which will take several minutes:
+<p>
+<table class="command"><tr><td><pre>
+./run_transdecoder.sh
+</pre></table>
+  <li>When TransDecoder is finished, the output will be in the <kbd>transdecoder_out</kbd> directory. Go there and use the coding sequence FASTA file <kbd>transdecoder.cds</kbd> to find how many coding regions were identified.
+  <li>Examine the coding sequence headers to find how many different ORF types were identified. List the ORF types and their counts.
+  <li>The ORF types are based on whether a start codon, a stop codon or both were found in expected positions within a transcript. Using this information and referring to the <a href="https://en.wikipedia.org/wiki/DNA_codon_table">DNA codon table</a>, compare the coding sequences of different ORF types in order to figure out how the ORFs were classified into different types that you identified.
+  <li>Based on the proportions of ORF types, are the assembled transcripts generally long enough to contain a whole coding region?
+</ol>
+
+<div id="homology" class="sectitle">Protein homology and domain search</div>
+<hr>
+<ol>
+  <li>We will use the <a href="https://github.com/Trinotate/Trinotate.github.io/wiki">Trinotate</a> suite for functional annotation of the <i>de novo</i> assembled transcriptome. Trinotate depends heavily on protein homology search against known protein sequence databases.
+  <li>We first search for proteins translated from the whole transcripts in the Swiss-Prot protein database. In your <kbd>transcriptomics</kbd> directory, copy <kbd>/export/data/657.001/scripts/search_transcripts_sprot.sh</kbd> and run it, which will do a BLASTX search of transcripts against the Swiss-Prot proteins:
+<p>
+<table class="command"><tr><td><pre>
+./search_transcripts_sprot.sh
+</pre></table>
+  <li>The BLASTX result is in the file <kbd>trinotate_out/blasx.sprot.tab6</kbd>. How many transcripts produced a protein that matched a Swiss-Prot protein?
+  <li>Then we search for proteins translated by the by TransDecoder-identified coding regions. While in <kbd>transcriptomics</kbd>, copy <kbd>/export/data/657.001/scripts/search_proteins_sprot.sh</kbd> and run it, which will do a BLASTP search of the predicted proteins against the Swiss-Prot proteins:
+<p>
+<table class="command"><tr><td><pre>
+./search_transcripts_sprot.sh
+</pre></table>
+  <li>The BLASTP result is in the file <kbd>trinotate_out/blasp.sprot.tab6</kbd>. How many TransDecoder-predicted proteins were found in the Swiss-Prot database?
+  <li>Trinotate also requires protein domain identification results to perform functional annotation. We need to search for protein domains of the TransDecoder-predicted protein in the <a href="https://pfam.xfam.org">Pfam</a> database, using <a href="http://hmmer.org">HMMER</a>. As this process is very slow, the search has already been done for you. Go to your <kbd>trinotate_out</kbd> directory and copy the file <kbd>/export/data/657.001/trinotate_out/hmmer.pfam.domtab</kbd>.
+</ol>
+
+<div id="db" class="sectitle">Building annotation database</div>
+<hr>
+<ol>
+  <li>We can now build a Trinotate database using the protein search results. Go to <kbd>trinotate_out</kbd> and copy the default Trinotate <a href="https://www.sqlite.org">SQLite</a> database by copying <kbd>/export/data/657.001/trinotate_out/Trinotate.sqlite</kbd>.
+  <li>Go back to your <kbd>transcriptomics</kbd> directory. We now load the protein homology search results (the BLASTX and BLASTP output) and the protein domain search results (the Pfam domains identified) to the database. Copy <kbd>/export/data/657.001/scripts/populate_trinotate_db.sh</kbd> and run it to do these tasks:
+<p>
+<table class="command"><tr><td><pre>
+./populate_trinotate_db.sh
+</pre></table>
+  <li>Finally, we output a Trinotate report that combines all search information into one big table. While still in <kbd>transcriptomics</kbd>, copy <kbd>/export/data/657.001/scripts/make_trinotate_report.sh</kbd> and run it to create the report. This step will take several minutes to complete:
+<p>
+<table class="command"><tr><td><pre>
+./make_trinotate_report.sh
+</pre></table>
+</ol>
+
+<div id="report" class="sectitle">Exploring annotation content</div>
+<hr>
+<ol>
+  <li>The final annotation report is in <kbd>trinotate_out/Trinotate_report.xls</kbd>, which is a tab-separated text file. Go to <kbd>trinotate_out</kbd> and view the file as a spreadsheet with this command (ignore warnings):
+<p>
+<table class="command"><tr><td><pre>
+libreoffice Trinotate_report.xls &
+</pre></table>
+  <li>When the spreadsheet opens up, the first row shows the column headers indicating the type of annotation. Extract the same information in text form using the command below:
+<p>
+<table class="command"><tr><td><pre>
+head -1 Trinotate_report.xls
+</pre></table>
+   <li>From the header line, make a note of the column numbers (starting from 1) for the following annotation types:
+   <ul class="level2">
+     <li>Top Swiss-Prot BLASTX hit
+     <li>Top Swiss-Prot BLASTP hit
+     <li>Pfam
+     <li><a href="http://eggnogdb.embl.de">EggNOG</a>
+     <li><a href="https://www.genome.jp/kegg">KEGG</a>
+     <li><a href="http://www.geneontology.org">GO</a> from BLAST
+     <li>GO from Pfam
+   </ul>
+   <li>Check that your column numbers are correct, by using the <kbd>cut</kbd> command after the <kbd>head</kbd> command. For example, if COL was your column number for Pfam annotation, you should see the correct header (Pfam) when you run the command below. Repeat this check for each of the listed annotation types:
+<p>
+<table class="command"><tr><td><pre>
+head -1 Trinotate_report.xls | cut -fCOL
+</pre></table>
+   <li>When a transcript has no annotation of a given type, a single dot (<kbd>.</kbd>) is printed in the text file. Use this information in the command below (where COL is your column number for top Swiss-Prot BLASTX hit), to count how many transcripts have some annotation based on top Swiss-Prot BLASTX hit:
+<p>
+<table class="command"><tr><td><pre>
+tail -n +2 Trinotate_report.xls | cut -fCOL | grep -v "^\." | wc -l
+</pre></table>
+    <li>Repeat the above counting task for each of the listed annotation types. List the counts obtained.
+    <li>Suppose we want to know how many transcripts have been annotated with a Swiss-Prot protein, regardless whether it comes from BLASTX or BLAST results. We can cut out both columns and check which ones have information in at least one of the two fields. Run this command to do this task (where COL1 and COL2 are your column numbers for Swiss-Prot BLSATX and BLASTP hits, respectively):
+<p>
+<table class="command"><tr><td><pre>
+tail -n +2 Trinotate_report.xls | cut -fCOL1,COL2 | grep -v -P "^\.\t\." | wc -l
+</pre></table>
+    <li>Use the above command with appropriate column numbers, to find out how many transcripts have a GO annotation, regardless of the source (BLAST or Pfam).
+</ol>

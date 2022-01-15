@@ -1,0 +1,123 @@
+<html>
+
+<head>
+
+<title>657.001 Lab 4</title>
+<link rel="stylesheet" type="text/css" href="657.001.css">
+<link rel="stylesheet" type="text/css" href="sidenav.css">
+<script type="text/javascript" src="sidenav.js"></script>
+
+<body>
+
+<div id="mySidenav" class="sidenav">
+<a href="javascript:void(0)" class="closebtn" onclick="closeNav()">&times;</a>
+</div>
+
+<div id="main">
+
+<div class="labtitle">Lab 4&ensp;Differential Expression Analysis</div>
+<div class="subtitle">657.001&ensp;Transcriptomics&ensp;(WS 2018)</div>
+
+<span id="contents" onclick="openNav()">
+<span style="font-size:125%">&#9776;</span>&ensp;Contents
+</span>
+
+</ol>
+
+<div id="abund" class="sectitle">Transcript abundance estimation</div>
+<hr>
+<ol>
+  <li>We have 2 samples: <kbd>C_canadensis_GS</kbd> and <kbd>C_canadensis_GR</kbd>. They are from the same <i>Conyza canadensis</i> species, but the GS samples is glyphosate-susceptible and the GR sample is glyphosate-resistant. We now estimate the abundance of transcripts for each sample separately.
+  <li>In your <kbd>transcriptomics</kbd> directory, build a Bowtie 2 index from the Trinity assembly. Copy <kbd>/export/data/657.001/scripts/prep_reference.sh</kbd> and run it. Make sure the command runs through up to the end, until you see the &ldquo;Only prepping reference. Stopping now.&rdquo; message.
+<p>
+<table class="command"><tr><td><pre>
+./prep_reference.sh
+</pre></table>
+  <li>In <kbd>transcriptomics</kbd>, estimate transcript abundance by aligning the reads of each sample to the transcripts using Bowtie 2. Copy <kbd>/export/data/657.001/scripts/estimate_trans_abund.sh</kbd> and run it. This shell script will be silent and take several minutes to finish:
+<p>
+<table class="command"><tr><td><pre>
+./estimate_trans_abund.sh
+</pre></table>
+  <li>The estimation of transcript abundance was done using the <a href="https://github.com/deweylab/RSEM">RSEM</a> package. The log file <kbd>trans_abund/rsem.log</kbd> has two sections, each containing messages output while estimating transcript abundance for one sample. Look into the log file to find, for each sample:
+  <ul class="level2">
+    <li>Overall rate of alignment to the transcriptome 
+    <li>Rate of concordant alignment to the transcriptome 
+  </ul>
+  <li>Check that there are two subdirectories corresponding to each sample under the <kbd>trans_abund</kbd> directory. We now collect the abundance estimates for all samples into a single matrix. In <kbd>transcriptomics</kbd>, copy <kbd>/export/data/657.001/scripts/combine_abund_to_matrix.sh</kbd> and run it.
+<p>
+<table class="command"><tr><td><pre>
+./combine_abund_to_matrix.sh
+</pre></table>
+</ol>
+
+<div id="DE" class="sectitle">Differential expression analysis</div>
+<hr>
+ 
+<ol>
+  <li>In <kbd>transcriptomics</kbd>, compare the transcript abundance estimates and perform differential expression (DE) analysis. Copy <kbd>/export/data/657.001/scripts/run_DE_analysis.sh</kbd> and run it:
+<p>
+<table class="command"><tr><td><pre>
+./run_DE_analysis.sh
+</pre></table>
+  <li>Go to the <kbd>diff_expr</kbd> directory, and view the contents of <kbd>RSEM.isoform.counts.matrix.GR_vs_GS.edgeR.DE_results</kbd>. This file contains the main results of the DE analysis, where the expression levels of the glyphosate-resistant (GR) and glyphosate-susceptible (GS) samples are compared. Answer these questions using this file:
+  <ul class="level2">
+    <li>DE results are not produced for some transcripts. How many transcripts have a fold change value and additional statistical measures?
+    <li>What is the minimum log fold change (FC)? Which transcript has it? What is its associated FDR (false discovery rate)? You can use the <kbd>sort</kbd> command, with &ldquo;logFC&rdquo; (column 4) as the numeric sort key:
+<p>
+<table class="command"><tr><td><pre>
+tail -n +2 RSEM.isoform.counts.matrix.GR_vs_GS.edgeR.DE_results | sort -nk4 | head -1 
+</pre></table>
+    <li>What is the maximum log FC? Use the previous command with the sorting part replaced with <kbd>sort -nrk4</kbd> for reverse sort. Record the maximum log FC, transcript ID, and FDR value.
+    <li>Open the plots of the DE results with the command below. Look at the &ldquo;Volcano plot&rdquo; in detail and figure out what the red and black dots represent. Refer to <a href="https://github.com/trinityrnaseq/trinityrnaseq/wiki/Trinity-Differential-Expression">Trinity Differential Expression</a>. 
+<p>
+<table class="command"><tr><td><pre>
+evince RSEM.isoform.counts.matrix.GR_vs_GS.edgeR.DE_results.MA_n_Volcano.pdf
+</pre></table>
+    <li>In the volcano plot, locate the two points corresponding to the minimum FC and maximum FC. Does the plot indicate that these two FC's are significant? Why or why not?
+</ol>
+
+<div id="DEtrans" class="sectitle">Extraction of differentially expressed transcripts</div>
+<hr>
+
+<ol>
+  <li>We want to extract the transcripts that are <em>significantly</em> differentially expressed (DE) between the two samples (GR and GS). In <kbd>transcriptomics</kbd>, extract those transcripts that are at least 4-fold DE with a FDR less than 0.05. Copy <kbd>/export/data/657.001/scripts/extract_DE_trans.sh</kbd> and run it:
+<p>
+<table class="command"><tr><td><pre>
+./extract_DE_trans.sh
+</pre></table>
+  <li>In the <kbd>diff_expr</kbd> directory, find two DE results <em>subset</em> files listing the transcripts that are up-regulated in the GR sample and in the GS sample, respectively. Using these files, answer these questions:
+  <ul class="level2">
+    <li>How many transcripts are up-regulated in the GR sample?
+    <li>How many transcripts are up-regulated in the GS sample?
+  </ul>
+  <li>View the plot of expression levels of the DE transcripts in the samples with the command below. How can you visually estimate the relative amounts of up-regulated transcripts from each sample?
+<p>
+<table class="command"><tr><td><pre>
+evince diffExpr.P0.05_C2.matrix.log2.centered.genes_vs_samples_heatmap.pdf
+</pre></table>
+</table>
+</ol>
+
+<div id="cluster" class="sectitle">Clustering of differentially expressed transcripts</div>
+<hr>
+<ol>
+  <li>We now want to see how the DE transcripts cluster together, based on patterns of expression levels. We can cut the previous hierarchical clustering tree in <kbd>diffExpr.P0.05_C2.matrix.log2.centered.genes_vs_samples_heatmap.pdf</kbd> at a certain percentage of the tree height. In <kbd>transcriptomics</kbd>, cut the tree at 30% of its height to generate a fixed set of clusters. Copy <kbd>/export/data/657.001/scripts/cluster_DE_trans.sh</kbd> and run it:
+<p>
+<table class="command"><tr><td><pre>
+./cluster_DE_trans.sh
+</pre></table>
+</table>
+  <li>Go to the <kbd>diff_expr/diffExpr.P0.05_C2.matrix.RData.clusters_fixed_P_30</kbd> directory, and view the cluster plots:
+<p>
+<table class="command"><tr><td><pre>
+evince my_cluster_plots.pdf
+</pre></table>
+</table>
+  <li>Each plot represents a cluster, where a gray line connects expression levels of a transcript in the cluster over the two samples. The blue dots and the connecting line show the centroids (averages) of the transcript abundance over all transcripts in the cluster.
+  <ul class="level2">
+    <li>How many clusters were formed?
+    <li>List the number of transcripts that were put into each cluster.
+    <li>Go back to the <kbd>diff_expr</kbd> directory and display <kbd>clusters_fixed_P_30.heatmap.heatmap.pdf</kbd>. What does the vertical color bar indicate?
+    <li>Explain how this heatmap and the previous cluster plots are related, in terms of expression levels.
+  </ul>
+</ol>

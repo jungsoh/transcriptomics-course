@@ -1,0 +1,196 @@
+<html>
+
+<head>
+
+<title>657.001 Lab 2</title>
+<link rel="stylesheet" type="text/css" href="657.001.css">
+<link rel="stylesheet" type="text/css" href="sidenav.css">
+<script type="text/javascript" src="sidenav.js"></script>
+
+<body>
+
+<div id="mySidenav" class="sidenav">
+<a href="javascript:void(0)" class="closebtn" onclick="closeNav()">&times;</a>
+</div>
+
+<div id="main">
+
+<div class="labtitle">Lab 2&ensp;<i>De Novo</i> Transcriptome Assembly</div>
+<div class="subtitle">657.001&ensp;Transcriptomics&ensp;(WS 2018)</div>
+
+<span id="contents" onclick="openNav()">
+<span style="font-size:125%">&#9776;</span>&ensp;Contents
+</span>
+
+<div class="usectitle">Setup</div>
+<hr>
+<ol>
+  <li>Use the <kbd>less</kbd> command to view the contents of a file. Use <kbd>less -S</kbd> to chop long lines, and use left/right arrows to scroll left/right. Hit space to move forward one screen and hit <kbd>b</kbd> to move backward one screen.
+</ol>
+
+<div id="files" class="sectitle">Checking read files</div>
+<hr>
+<ol>
+  <li>The raw RNA-seq reads are in the <kbd>/export/data/657.001/reads</kbd> directory. We have paired-end RNA-seq reads from two samples named ERR2040653 and ERR2040654, respectively, downloaded from <a href="https://www.ncbi.nlm.nih.gov/sra">SRA</a>. For each sample we have R1 and R2 files in the FASTQ format, forming read pairs.
+  <li>Refer to <a href="https://en.wikipedia.org/wiki/FASTQ_format" target="_blank">FASTQ format</a> for help on the FASTQ file format, and view one of the read files with the command below. How many lines of text in a FASTQ file comprise one read? 
+<p>
+<table class="command"><tr><td><pre>
+less /export/data/657.001/reads/ERR2040653.R1.fastq
+</pre></table>
+  <li>Use the command below to find the number of text lines in the R1 file and divide it by the previous answer, to obtain the number of reads in the R1 file of ERR2040653: 
+<p>
+<table class="command"><tr><td><pre>
+wc -l /export/data/657.001/reads/ERR2040653.R1.fastq
+</pre></table>
+  <li>Use the previous command with an appropriate FASTQ file name to obtain the number of R1 reads for the sample ERR2040654.
+  <li>What is the symbol in the first character position of a read ID line in a FASTQ file? Use this symbol as part of the pattern to search for with the <kbd>grep</kbd> command, to find the total read count in the R1 file. For example, if &ldquo;X&rdquo; <i>were</i> the symbol (it definitely is not!), you would run the command below to find the number of reads in the R1 file of ERR2040653:
+<p>
+<table class="command"><tr><td><pre>
+grep ^X /export/data/657.001/reads/ERR2040653.R1.fastq | wc -l
+</pre></table>
+  <li>Does the number obtained in Step 5 agree with the count for R1 reads of ERR2040653 obtained from Step 3? Why or why not?
+  <li>What is the <i>total</i> number of reads we have? Remember we have pairs of reads.
+  <li>From a read ID line alone, how can you tell if the read is a left (forward or R1) read or a right (reverse or R2) read?
+</ol>
+
+<div id="quality" class="sectitle">Checking read quality</div>
+<hr>
+<ol>
+  <li>FastQC is a tool to examine the quality of reads in a FASTQ file. Go to your <kbd>transcriptomics</kbd> directory and run FastQC on the read files:
+<p>
+<table class="command"><tr><td><pre>
+mkdir fastqc_out
+fastqc -o fastqc_out -t 4 /export/data/657.001/reads/ERR204065?.R?.fastq
+</pre></table>
+  <li>Go to the <kbd>fastqc_out</kbd> directory and load the FastQC HTML file for R1 of ERR2040653 onto your Web browser. If you are using Firefox, do <kbd>firefox ERR2040653.R1_fastqc.html</kbd>. If you are using Chromium, do <kbd>chromium-browser ERR2040653.R1_fastqc.html</kbd>. Refer to the <a href="http://www.bioinformatics.babraham.ac.uk/projects/fastqc/Help">FastQC documentation</a> if necessary.
+  <ul class="level2">
+    <li>Do all the R1 reads have the same length? If so, what is the length?
+    <li>What is the most prevailing trend you notice from the &ldquo;Per base sequence quality&rdquo; section of the FastQC report for the R1 reads? Focus on how read quality values change from the beginning to the end.
+    <li>Load the FastQC HTML file for R2 of ERR2040653 onto the Web browser and look at &ldquo;Per base sequence quality&rdquo;. Do you see the same sequence quality trend in the R2 reads as in the R1 reads? If so, is the trend stronger or weaker in the R2 reads than in the R1 reads?
+    <li>Answer the same three questions above for the sample ERR2040654.
+  </ul>
+</ol>
+
+<div id="ssmpl" class="sectitle">Subsampling reads</div>
+<hr>
+<ol>
+  <li>We will subsample the reads to reduce the number of reads we will actually assemble into a transcriptome.
+  <li>Go to your <kbd>transcriptomics</kbd> directory (if not already there), and copy the script to randomly subsample 5% of the raw reads, with this command:
+<p>
+<table class="command"><tr><td><pre>
+cp /export/data/657.001/scripts/subsample_reads.sh .
+</pre></table>
+  <li>Run the script:
+<p>
+<table class="command"><tr><td><pre>
+./subsample_reads.sh
+</pre></table>
+  <li>Go to your newly created <kbd>reads</kbd> directory, and check that you have 4 FASTQ files with the <kbd>5pct</kbd> inserted into the file name.
+  <li>The read file names so far are not meaningful. We will rename the reads and read files to indicate what kind of samples they represent. Copy <kbd>/export/data/657.001/scripts/rename_reads.sh</kbd> and run it:
+<p>
+<table class="command"><tr><td><pre>
+./rename_reads.sh 
+</pre></table>
+  <li>You will now see more meaningfully named files in the <kbd>reads</kbd> directory. The RNA-seq reads are from <a href="https://en.wikipedia.org/wiki/Erigeron_canadensis"><i>Conyza canadensis</i></a>. We have two samples: <a href="https://en.wikipedia.org/wiki/Glyphosate">glyphosate</a>-susceptible (GS) and glyphosate-resistant (GR), which will be compared.
+</pre></table>
+  <li>How many read pairs were subsampled from the <kbd>C_canadensis_GS</kbd> sample? And from the <kbd>C_canadensis_GR</kbd> sample? For each sample, check that we have actually subsampled 5% of the raw reads.
+</ol>
+
+<div id="spades" class="sectitle"><i>De novo</i> assembly with SPAdes</div>
+<hr>
+<ol>
+  <li>We now perform <i>de novo</i> transcriptome assembly with the <a href="http://cab.spbu.ru/software/spades">SPAdes</a> assembler. Go to the <kbd>transcriptomics</kbd> directory, copy <kbd>/export/data/657.001/scripts/run_spades.sh</kbd> and run it:
+<p>
+<table class="command"><tr><td><pre>
+./run_spades.sh
+</pre></table>
+  <li>The assembly will take about 12 minutes. When it finishes, the transcriptome assembly will be written to a <a href="https://en.wikipedia.org/wiki/FASTA_format">FASTA format</a> file <kbd>transcripts.fasta</kbd> in the <kbd>spades_out</kbd> directory. 
+  <li>How many contigs (transcripts) were produced in the assembly? Extract the sequence header lines and count them using this command:
+<p>
+<table class="command"><tr><td><pre>
+grep ">" transcripts.fasta | wc -l
+</pre></table>
+  <li>The transcripts in <kbd>transcripts.fasta</kbd> are sorted in descending order of transcript length. How long (in bp) is the longest transcript? How long is the shortest one? 
+</ol>
+
+<div id="trinity" class="sectitle"><i>De novo</i> assembly with Trinity </div>
+<hr>
+<ol>
+  <li>We also want to use <a href="https://github.com/trinityrnaseq/trinityrnaseq/wiki">Trinity</a> to produce another <i>de novo</i> transcriptome assembly. However, it takes several hours to do this, so the assembly has already been done for you.
+  <li>Go to the <kbd>transcriptome</kbd> directory, and copy the whole Trinity assembly output directory with this command:
+<p>
+<table class="command"><tr><td><pre>
+cp -r /export/data/657.001/trinity_out .
+</pre></table>
+  <li>Check that the transcriptome assembly file <kbd>Trinity.fasta</kbd> exists in the <kbd>trinity_out</kbd> directory.
+  <li>Using the same method as in checking the SPAdes assembly, find the number of transcripts created by Trinity:
+<p>
+<table class="command"><tr><td><pre>
+grep ">" Trinity.fasta | wc -l
+</pre></table>
+  <li>The transcripts in <kbd>Trinity.fasta</kbd> are <i>not</i> sorted by transcript length. Check that it is so, by running the <kbd>grep</kbd> command without the line counting portion attached: 
+<p>
+<table class="command"><tr><td><pre>
+grep ">" Trinity.fasta
+</pre></table>
+  <li>Use this command to sort the sequence headers by transcript length and catch the first line, from which you can extract the length of the shortest transcript:
+<p>
+<table class="command"><tr><td><pre>
+grep ">" Trinity.fasta | sort -t= -nk2 | head -1
+</pre></table>
+  <li>Replace <kbd>head</kbd> in the above command with <kbd>tail</kbd> to catch the last line and find how long the longest transcript is.
+</ol>
+
+<div id="assess" class="sectitle">Assembly quality assessment</div>
+<hr>
+<ol>
+  <li>We now want to determine which assembly is better, so that we can use the better one for downstream analysis. We will use <a href="http://hibberdlab.com/transrate">Transrate</a> to analyze and compare the quality of the two assemblies.
+  <li>Copy the script <kbd>/export/data/657.001/scripts/run_transrate.sh</kbd> for running Transrate on the two assemblies and run it:
+<p>
+<table class="command"><tr><td><pre>
+./run_transrate.sh
+</pre></table>
+  <li>After running the script, the statistical assessment of each assembly will be summarized in the <kbd>transrate.log</kbd> file in <kbd>transrate_out/spades</kbd> and <kbd>transrate_out/trinity</kbd>, respectively.
+  <li>From the two <kbd>transrate.log</kbd> files, extract the following metrics for the two assemblies and record them side by side:
+  <ul class="level2">
+    <li>Number of contigs (transcripts)
+    <li>Maximum contig length
+    <li>Minumum contig length
+    <li>Mean contig length
+    <li>Number of contigs with ORF
+    <li>Percentage of contigs with ORF
+    <li>Transrate assembly score
+    <li>Number of good contigs
+    <li>Percentage of good contigs
+  </ul>
+  <li>Based on the above comparison of the metrics, which assembly do you think is better and why?
+  <li>Refer to <a href="http://hibberdlab.com/transrate/metrics.html">Transrate metrics</a> to find a single metric that is recommended to compare assemblies. Based on this metric, which assembly is better?
+</ol>
+
+<div id="viz" class="sectitle">Visualization of <i>de novo</i> transcriptome assembly</div>
+<hr>
+<ol>
+  <li>We now want to explore how the reads align back to the selected transcriptome assembly.
+  <li>Copy <kbd>/export/data/657.001/scripts/align_reads_to_assembly.sh</kbd> and run it, which will take a few minutes:
+<p>
+<table class="command"><tr><td><pre>
+./align_reads_to_assembly.sh
+</pre></table>
+  <li>Go to <kbd>trinity_out</kbd>, view the content of the <kbd>reads2assembly.log</kbd> file and answer these questions:
+  <ul class="level2">
+    <li>What is the percentage of the reads that aligned?
+    <li>What is the percentage of the read pairs that aligned concordantly?
+  </ul>
+  <li>Open Tablet (command <kbd>tablet</kbd>). In &ldquo;Open Assembly&rdquo;, select <kbd>reads2assembly.bam</kbd> as the &ldquo;Primary assembly file&rdquo;, select <kbd>Trinity.fasta</kbd> as the &ldquo;Reference/consensus file&rdquo;, both of which are in the <kbd>trinity_out</kbd> directory, and open the files.
+  <li>Once the files are loaded, use the left panel listing the contigs to answer these questions:
+  <ul class="level2">
+    <li>What is the average contig length and how many reads does a contig have on average? Find a link to display this information.
+    <li>How many contigs are shorter than 250 bp? Use an appropriate filter.
+    <li>How many contigs have more than 100 reads? Use an appropriate filter.
+  </ul>
+  <li>The main panel on the right shows the (dark blue) coverage plot that shows how many read bases are assembled onto a contig base. Answer these questions regarding <i>only</i> those contigs that have more than 100 reads:
+  <ul class="level2">
+    <li>Find the longest contig. How many reads were assembled into this contig? What is the maximum coverage depth of this contig? What is the average coverage depth?
+    <li>Answer the same questions for the shortest contig.
+  </ul>
+</ol>

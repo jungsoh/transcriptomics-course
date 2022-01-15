@@ -1,0 +1,230 @@
+body {
+  font-family: arial, sans-serif;
+  background-color: white;
+  counter-reset: section;
+}
+
+/* Heading in purplish gray */
+h1, h2, h3, h4, h5, h6 {
+  color: rgb(71,71,107);
+}
+
+/* Lab title */
+div.labtitle {
+  color: rgb(71,71,107);
+  font-size: 160%;
+  font-weight: bold;
+  margin-top: 0;
+  margin-bottom: 0.3em;
+  text-align: center;
+}
+
+/* Lab subtitle (e.g. course name) */
+div.subtitle {
+  color: rgb(71,71,107);
+  font-size: 110%;
+  margin-top: 0;
+  margin-bottom: 2em;
+  text-align: center;
+}
+
+/* Lab section title (numbered), unnumbered section title  */
+div.sectitle, div.usectitle {
+  color: rgb(71,71,107);
+  font-size: 150%;
+  margin-top: 1em;
+  margin-bottom: 0;
+}
+
+/* Increment counter and set content on numbered section title */
+div.sectitle:before {
+  counter-increment: section;
+  content: counter(section) ". ";
+}
+
+/* Flow charts */
+div.flow {
+  margin-top: 1em;
+  margin-bottom: 1em;
+  text-align: center;
+}
+
+/* Table default: center, no border, very light blue background */
+table {
+  margin: auto;	
+  border-collapse: collapse;
+  font-family: arial, sans-serif;
+  background-color: rgb(230,243,255);
+} 
+
+/* Table rows have light gray bottom border */
+tr {
+  border-bottom: 1px solid rgb(191,191,191);
+}
+
+/* Table rows alternate between default and  darker light blue background */
+tr:nth-child(odd) {
+  background-color: rgb(204,230,255);		
+}
+
+/* Table header background in a lighter heading color */
+th {
+  background-color: rgb(0,66,128);
+  color: white;
+}
+
+/* Padding around all table data */
+th, td {
+  padding: 6px;
+}
+
+/* Centered td */
+td.center {
+  text-align: center;
+}
+
+/* Table with shadow on the right and bottom */
+table.shadow {
+  box-shadow: 4px 4px 3px grey;		/* h-shadow, v-shadow, blur, color */
+}
+
+/* Table for putting terminal commands in: shadow and larger font size */
+table.command {
+  box-shadow: 4px 4px 3px grey;
+  font-size: 120%;
+}
+
+/* Table for showing hierarchy */
+table.tree {
+  box-shadow: 4px 4px 3px grey;
+  font-size: 120%;
+}
+
+/* Prevent 1-row tree class table appear in color set by tr.nth-child(odd) */
+table.tree tr:nth-child(odd) {
+  /*background-color: rgb(230,255,204);*/
+  background-color: rgb(230,230,204);
+}
+
+/* Command lines and trees don't need row borders */
+table.command, table.tree tr {
+  border-bottom: 0;
+}
+
+textarea {
+  font-family: monospace;
+}
+
+/* White background table row */
+tr.white {
+  background-color: #ffffff;
+}
+
+/* Links don't have underline when not hovered on */
+a:link {
+  text-decoration: none;
+  color: rgb(34,0,204);
+}
+
+/* No underline after link is visited */
+a:visited {
+  text-decoration: none;
+}
+
+/* Show underline only when hovered on or pressed */
+a:hover, a:active {
+  text-decoration: underline;
+}
+
+/* Indicate things on terminal or to type in */
+kbd {
+  font-weight: bold;
+  font-size: 120%;
+}
+
+/* Almost no top margin to hang on section title, 1px high light gray line */
+hr {
+  margin-top: 0.1em;
+  background-color: rgb(166,166,166);
+  border: none;
+  height: 1px;
+}
+
+/* Reduce padding before numbers in ordered lists */
+ol {
+  padding-left: 2em;
+}
+
+/* Ordered list below numbered question */
+ol.level2 {
+  list-style-type: upper-alpha;
+  padding-top: 1em;
+  padding-left: 1.5em;
+}
+
+/* Unordered list below numbered question */
+ul.level2 {
+  list-style-type: disc;
+  padding-top: 1em;
+  padding-left: 1.5em;
+}
+
+/* Extra space between list items */
+li {
+  padding-bottom: 1em;
+}
+
+/* Reduce space between level2 list items */
+ul.level2 li, ol.level2 li {
+  padding-bottom: 0.85em;
+}
+
+/* Mostly for top and bottom space of tables of command class */
+p {
+  margin-top: 0.5em;
+  margin-bottom: 0.5em;
+}
+
+/* For single paragraphs to have the same spaces around as lists */
+p.single {
+  padding-top: 0.4em;
+  padding-left: 0.9em;
+  padding-bottom: 0.5em;
+}
+
+/* Firefox adds exta space at bottom if margin-bottom is not set to zero */
+pre {
+  margin-bottom: 0;
+}
+
+/* Prevent line breaking at hyphens (e.g. T-Coffee) */
+span.nowrap {
+  white-space: nowrap;
+}
+
+/* Box for program name */
+span.box {
+  font-family: monospace;
+  font-size: 120%;
+  background-color: rgb(230,255,204);
+  padding: 0.5em;
+  box-shadow: 4px 4px 3px grey;
+}
+
+/* Multi-line inline block */
+span.multi {
+  display: inline-block;
+  vertical-align: middle;
+  text-align: left;
+}
+
+/* Increase arrow and equivalence symbol size */
+span.big {
+  font-size: 125%;
+  vertical-align: middle;
+}
+
+/* Text in gray */
+span.gray {
+  color: gray;
+}

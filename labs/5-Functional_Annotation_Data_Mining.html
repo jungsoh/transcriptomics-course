@@ -1,0 +1,78 @@
+<html>
+
+<head>
+
+<title>657.001 Lab 5</title>
+<link rel="stylesheet" type="text/css" href="657.001.css">
+<link rel="stylesheet" type="text/css" href="sidenav.css">
+<script type="text/javascript" src="sidenav.js"></script>
+
+<body>
+
+<div id="mySidenav" class="sidenav">
+<a href="javascript:void(0)" class="closebtn" onclick="closeNav()">&times;</a>
+</div>
+
+<div id="main">
+
+<div class="labtitle">Lab 5&ensp;Functional Annotation Data Mining</div>
+<div class="subtitle">657.001&ensp;Transcriptomics&ensp;(WS 2018)</div>
+
+<span id="contents" onclick="openNav()">
+<span style="font-size:125%">&#9776;</span>&ensp;Contents
+</span>
+
+<div id="uniprot" class="sectitle">Extracting UniProt IDs</div>
+<hr>
+<ol>
+  <li>Now we combine the Trinotate functional annotation report and the DE transcript information, to see which functions are differentially more active in one sample than in the other.
+  <li>We want to extract the UniProt (Swiss-Prot) IDs of those transcripts that were determined to be DE. To perform this task, go to your <kbd>transcriptomics</kbd> directory, copy <kbd>/export/data/657.001/scripts/extract_DE_uniprot_ids.sh</kbd>, and run it:
+<p>
+<table class="command"><tr><td><pre>
+./extract_DE_uniprot_ids.sh
+</pre></table>
+  <li>In your <kbd>trinotate_out</kbd> directory, check that there are two files containing the UniProt IDs of those transcripts that are up-regulated in the GR sample and in the GS sample, respectively: <kbd>GR-UP.uniprot_ids.txt</kbd> and <kbd>GS-UP.uniprot_ids.txt</kbd>.
+  <li>Not all DE transcripts are associated with a UniProt ID. How many UniProt IDs do we have for the GR up-regulated transcripts? For the GS up-regulated transcripts?
+</ol>
+
+<div id="david" class="sectitle">Web-based annotation data mining</div>
+<hr>
+<ol>
+  <li>Go to the <a href="https://david.ncifcrf.gov" target="_blank">DAVID</a> website. Click &ldquo;Start Analysis&rdquo;.
+  <li>Open the &ldquo;Upload&rdquo; tab and submit your UniProt IDs for the GR up-regulated transcripts:
+  <ul class="level2">
+    <li>Choose <kbd>trinotate_out/GR-UP.uniprot_ids.txt</kbd> as the input gene list file.
+    <li>Select &ldquo;UNIPROT_ID&rdquo; as the identifier type.
+    <li>Select &ldquo;Gene List&rdquo; as the list type.
+    <li>Submit the list. 
+    <li>Select &ldquo;Option 1&rdquo; to continue.
+  </ul>
+  <li>From the DAVID tools available, select &ldquo;Gene Name Batch Viewer&rdquo; and you will be presented with the &ldquo;Gene List Report&rdquo;. How many genes were recognized (mapped to DAVID IDs)?
+  <li>Go back to the list of tools. Under &ldquo;Annotation Summary Results&rdquo;, expand &ldquo;Protein Domains&rdquo; and select PFAM, which was not selected by default.
+  <li>Open &ldquo;Functional Annotation Chart&rdquo;.
+  <ul class="level2">
+    <li>How many annotation terms (records) are there?
+    <li>By default, the chart is sorted in ascending order of Benjamini-adjusted <i>p</i>-
+value (last column). Sort the chart differently to find the annotation term with the highest gene count. What is this most supported annotation term and its gene count?
+    <li>Sort the chart yet another way, so that annotation terms of the same category are shown in adjacent rows. Record the annotation term with the highest gene count and the gene count itself within each of these categories: COG, GO Term BP, InterPro, KEGG pathway, and Pfam.
+  </ul>
+  <li>Repeat Steps 2 to 5 above for the UniProt IDs of the GS up-regulated transcripts.
+  <li>Do you notice a big difference in the top annotation terms of the select categories between the GR up-regulated transcripts and the GS up-regulated transcripts?
+</ol>
+
+<div id="cmdline" class="sectitle">Command line annotation data mining</div>
+<hr>
+<ol>
+  <li>We have lots of annotation information in <kbd>GR-UP.report.txt</kbd> and <kbd>GS-UP.report.txt</kbd> in the <kbd>trinotate_out</kbd> directory. They were generated while the UniProt IDs of DE transcripts were extracted. We will data-mine these files.
+  <li>Refer back to Lab 3, where you recorded the column numbers of the annotation sources in the Trinotate annotation report file, which you will need to run some commands.
+  <li>To extract annotation terms from a particular annotation source, count their frequencies and extract the top 5 terms from <kbd>GR-UP.report.txt</kbd>, use the command below, where <kbd>X</kbd> is your column number for the annotation source:
+<p>
+<table class="command"><tr><td><pre>
+cut -fX GR-UP.report.txt | grep -v "^\." | sed 's/`/\n/g' | cut -f1 -d^ | sort | uniq -c | sort -rn | head -5
+</pre></table>
+  <li>Run the command above on the annotation report for GR up-regulated transcripts, for the annotation sources of Pfam, EggNog, KEGG, and GO BLAST, respectively. For each annotation source, record the output or redirect the output to a properly named file, so that you can access them later.
+  <li>For the top annotation term from each annotation source, do a Web search to figure out what the term is all about. 
+  <li>Refer back to the top COG, GO Term BP, KEGG pathway, and Pfam terms for the GR up-regulated UniProt IDs that you obtained from DAVID. Check if any of these top annotation terms also appears among the top 5 terms from the same annotation source in <kbd>GR-UP.report.txt</kbd>.
+  <li>Repeat Steps 4 to 6 for GS up-regulated transcripts.
+  <li>What do you think are the top few differentially prominent functions found in the GR sample? In the GS sample? First consider each annotation source separately, then try to see if combining annotation sources strengthens your initial conclusion.
+</ol>
